@@ -22,11 +22,6 @@ final class OrderRepository extends AbstractRepository
         $this->entityManager->persist($order);
     }
 
-    public function remove(Order $order): void
-    {
-        $this->entityManager->remove($order);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException

@@ -22,11 +22,6 @@ final class EmployeeRepository extends AbstractRepository
         $this->entityManager->persist($employee);
     }
 
-    public function remove(Employee $employee): void
-    {
-        $this->entityManager->remove($employee);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException
@@ -87,10 +82,10 @@ final class EmployeeRepository extends AbstractRepository
         return $model;
     }
 
-    public function getByUserId(Uuid $id): Employee
+    public function getById(Uuid $id): Employee
     {
         /** @var Employee|null $model */
-        $model = $this->entityRepository->findBy(['user' => $id]);
+        $model = $this->entityRepository->findBy(['id' => $id]);
         if ($model === null) {
             throw new NotFoundException(sprintf('Сотрудник с id %s не найден', $id->getValue()));
         }

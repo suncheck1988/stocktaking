@@ -11,7 +11,6 @@ use App\Application\ValueObject\Uuid;
 use App\Client\Model\Client\Client;
 use App\Store\Dto\FixedAssetSearchDto;
 use App\Store\Model\FixedAsset\FixedAsset;
-use App\Store\Model\Unit\Unit;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
@@ -21,11 +20,6 @@ final class FixedAssetRepository extends AbstractRepository
     public function add(FixedAsset $fixedAsset): void
     {
         $this->entityManager->persist($fixedAsset);
-    }
-
-    public function remove(FixedAsset $fixedAsset): void
-    {
-        $this->entityManager->remove($fixedAsset);
     }
 
     /**
@@ -90,22 +84,6 @@ final class FixedAssetRepository extends AbstractRepository
             ->andWhere('LOWER(fa.inventoryNumber) = LOWER(:inventoryNumber)')
             ->setParameter('client', $fixedAsset->getClient())
             ->setParameter('inventoryNumber', $fixedAsset->getInventoryNumber());
-
-        return (int)$qb->getQuery()->getSingleScalarResult() > 0;
-    }
-
-    /**
-     * @throws NonUniqueResultException
-     * @throws NoResultException
-     */
-    public function existWithUnit(Unit $unit): bool
-    {
-        $qb = $this->entityRepository->createQueryBuilder('fa')
-            ->select('COUNT(fa)')
-            ->where('fa.client = :client')
-            ->andWhere('fa.unit = :unit')
-            ->setParameter('client', $unit->getClient())
-            ->setParameter('unit', $unit);
 
         return (int)$qb->getQuery()->getSingleScalarResult() > 0;
     }

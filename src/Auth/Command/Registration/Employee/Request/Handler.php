@@ -49,7 +49,7 @@ class Handler
      */
     public function handle(Command $command): void
     {
-        $clientUser = $this->clientRepository->getByUserId(new Uuid($command->getClientUserId()));
+        $client = $this->clientRepository->get(new Uuid($command->getClientUserId()));
 
         $date = new DateTimeImmutable();
 
@@ -81,9 +81,8 @@ class Handler
         $this->userRepository->add($user);
 
         $employee = new Employee(
-            Uuid::generate(),
             $user,
-            $clientUser,
+            $client,
             $command->isFinanciallyResponsiblePerson(),
             new DateTimeImmutable()
         );

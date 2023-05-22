@@ -24,11 +24,6 @@ final class PositionRepository extends AbstractRepository
         $this->entityManager->persist($position);
     }
 
-    public function remove(Position $position): void
-    {
-        $this->entityManager->remove($position);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException

@@ -20,9 +20,9 @@ class ClientFinder
     public function findByUser(User $user): Client
     {
         if ($user->getRole()->isClient()) {
-            return $this->clientRepository->getByUserId($user->getId());
+            return $this->clientRepository->get($user->getId());
         } else {
-            return $this->employeeRepository->getByUserId($user->getId())->getClient();
+            return $this->employeeRepository->getById($user->getId())->getClient();
         }
     }
 }

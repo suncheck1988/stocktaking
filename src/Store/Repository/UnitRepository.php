@@ -22,11 +22,6 @@ final class UnitRepository extends AbstractRepository
         $this->entityManager->persist($unit);
     }
 
-    public function remove(Unit $unit): void
-    {
-        $this->entityManager->remove($unit);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException

@@ -20,11 +20,6 @@ final class DeliveryTypeRepository extends AbstractRepository
         $this->entityManager->persist($deliveryType);
     }
 
-    public function remove(DeliveryType $deliveryType): void
-    {
-        $this->entityManager->remove($deliveryType);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException

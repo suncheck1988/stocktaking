@@ -26,11 +26,6 @@ final class UserRepository extends AbstractRepository
         $this->entityManager->persist($user);
     }
 
-    public function remove(User $user): void
-    {
-        $this->entityManager->remove($user);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException
@@ -72,14 +67,6 @@ final class UserRepository extends AbstractRepository
         $result = $qb->getQuery()->getResult();
 
         return $result;
-    }
-
-    public function fetchOneByRole(Role $role): ?User
-    {
-        /** @var User|null $model */
-        $model = $this->entityRepository->findOneBy(['role' => $role->getValue()]);
-
-        return $model;
     }
 
     public function get(Uuid $id): User
@@ -212,32 +199,6 @@ final class UserRepository extends AbstractRepository
     {
         if ($searchDto->id !== null && $searchDto->id !== '') {
             $qb->andWhere('u.id = :id')->setParameter('id', $searchDto->id);
-        }
-
-        if ($searchDto->name !== null && $searchDto->name !== '') {
-            $qb->andWhere('u.name LIKE :name')->setParameter('name', '%' . $searchDto->name . '%');
-        }
-
-        if ($searchDto->restaurantId !== null) {
-            $qb->andWhere('u.restaurantId = :restaurantId')->setParameter('restaurantId', $searchDto->restaurantId);
-        }
-
-        if ($searchDto->role !== null) {
-            $qb->andWhere('u.role = :role')->setParameter('role', $searchDto->role);
-        }
-
-        if ($searchDto->status !== null) {
-            $qb->andWhere('u.status = :status')->setParameter('status', $searchDto->status);
-        }
-
-        if ($searchDto->createdAtStart !== null) {
-            $qb->andWhere('u.createdAt >= :createdAtStart')
-                ->setParameter('createdAtStart', $searchDto->createdAtStart);
-        }
-
-        if ($searchDto->createdAtEnd !== null) {
-            $qb->andWhere('u.createdAt <= :createdAtEnd')
-                ->setParameter('createdAtEnd', $searchDto->createdAtEnd);
         }
     }
 

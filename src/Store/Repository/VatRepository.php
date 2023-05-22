@@ -22,11 +22,6 @@ final class VatRepository extends AbstractRepository
         $this->entityManager->persist($vat);
     }
 
-    public function remove(Vat $vat): void
-    {
-        $this->entityManager->remove($vat);
-    }
-
     public function get(Uuid $id, Client $client): Vat
     {
         /** @var Vat|null $model */

@@ -20,11 +20,6 @@ final class PaymentMethodRepository extends AbstractRepository
         $this->entityManager->persist($paymentMethod);
     }
 
-    public function remove(PaymentMethod $paymentMethod): void
-    {
-        $this->entityManager->remove($paymentMethod);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException

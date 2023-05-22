@@ -22,11 +22,6 @@ final class WarehouseRepository extends AbstractRepository
         $this->entityManager->persist($warehouse);
     }
 
-    public function remove(Warehouse $warehouse): void
-    {
-        $this->entityManager->remove($warehouse);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException

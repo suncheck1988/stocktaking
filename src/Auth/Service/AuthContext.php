@@ -100,7 +100,7 @@ class AuthContext implements ClientAwareInterface
      */
     public function checkCurrentClientEmployee(string $employeeId): void
     {
-        $employee = $this->employeeRepository->getByUserId(new Uuid($employeeId));
+        $employee = $this->employeeRepository->getById(new Uuid($employeeId));
 
         /** @var User $currentUser */
         $currentUser = $this->currentUser;

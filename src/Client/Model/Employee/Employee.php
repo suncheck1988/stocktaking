@@ -7,7 +7,6 @@ namespace App\Client\Model\Employee;
 use App\Application\Model\ClientableTrait;
 use App\Application\Model\IdentifiableTrait;
 use App\Application\Model\TimestampableTrait;
-use App\Application\ValueObject\Uuid;
 use App\Auth\Model\User\User;
 use App\Client\Model\Client\Client;
 use DateTimeImmutable;
@@ -30,13 +29,12 @@ class Employee
     private bool $isFinanciallyResponsiblePerson;
 
     public function __construct(
-        Uuid $id,
         User $user,
         Client $client,
         bool $isFinanciallyResponsiblePerson,
         DateTimeImmutable $date
     ) {
-        $this->id = $id;
+        $this->id = $user->getId();
         $this->user = $user;
         $this->client = $client;
         $this->isFinanciallyResponsiblePerson = $isFinanciallyResponsiblePerson;

@@ -22,11 +22,6 @@ final class CategoryRepository extends AbstractRepository
         $this->entityManager->persist($category);
     }
 
-    public function remove(Category $category): void
-    {
-        $this->entityManager->remove($category);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException

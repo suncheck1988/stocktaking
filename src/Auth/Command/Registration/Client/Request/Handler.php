@@ -77,11 +77,7 @@ class Handler
 
         $this->userRepository->add($user);
 
-        $client = new Client(
-            Uuid::generate(),
-            $user,
-            $date
-        );
+        $client = new Client($user, $date);
 
         $this->clientRepository->add($client);
 

@@ -6,7 +6,6 @@ namespace App\Client\Model\Client;
 
 use App\Application\Model\IdentifiableTrait;
 use App\Application\Model\TimestampableTrait;
-use App\Application\ValueObject\Uuid;
 use App\Auth\Model\User\User;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,11 +22,10 @@ class Client
     private User $user;
 
     public function __construct(
-        Uuid $id,
         User $user,
         DateTimeImmutable $date
     ) {
-        $this->id = $id;
+        $this->id = $user->getId();
         $this->user = $user;
 
         $this->createdAt = $date;

@@ -22,11 +22,6 @@ final class CounterpartyRepository extends AbstractRepository
         $this->entityManager->persist($counterparty);
     }
 
-    public function remove(Counterparty $counterparty): void
-    {
-        $this->entityManager->remove($counterparty);
-    }
-
     /**
      * @throws NonUniqueResultException
      * @throws NoResultException
@@ -82,17 +77,6 @@ final class CounterpartyRepository extends AbstractRepository
                     $client->getId()->getValue()
                 )
             );
-        }
-
-        return $model;
-    }
-
-    public function getByUserId(Uuid $id): Counterparty
-    {
-        /** @var Counterparty|null $model */
-        $model = $this->entityRepository->findBy(['user' => $id]);
-        if ($model === null) {
-            throw new NotFoundException(sprintf('Контрагент с id %s не найден', $id->getValue()));
         }
 
         return $model;
