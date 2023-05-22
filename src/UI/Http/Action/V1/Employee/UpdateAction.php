@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UI\Http\Action\V1\Employee;
 
-use App\Auth\Command\Employee\Update\Command;
+use App\Client\Command\Employee\Update\Command;
 use App\UI\Http\Action\AbstractAction;
 use App\UI\Http\ParamsExtractor;
 use Assert\AssertionFailedException;

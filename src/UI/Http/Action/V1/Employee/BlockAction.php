@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UI\Http\Action\V1\Employee;
 
-use App\Auth\Command\Employee\Block\Command;
+use App\Client\Command\Employee\Block\Command;
 use App\UI\Http\Action\AbstractAction;
 use Assert\AssertionFailedException;
 use OpenApi\Attributes as OA;

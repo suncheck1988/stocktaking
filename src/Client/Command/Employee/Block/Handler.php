@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\Command\Employee\Block;
+namespace App\Client\Command\Employee\Block;
 
 use App\Application\ValueObject\Uuid;
-use App\Auth\Command\Employee\Update\Command;
 use App\Auth\Service\AuthContext;
+use App\Client\Command\Employee\Update\Command;
 use App\Client\Repository\EmployeeRepository;
 use App\Data\Flusher;
 use Assert\AssertionFailedException;

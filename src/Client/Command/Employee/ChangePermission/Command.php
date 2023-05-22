@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\Command\Employee\ChangePermission;
+namespace App\Client\Command\Employee\ChangePermission;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\Command\Employee\Block;
+namespace App\Client\Command\Employee\Block;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 
