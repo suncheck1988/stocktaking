@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\UI\Http\Action\V1\Auth\Registration\Client;
+namespace App\UI\Http\Action\V1\Auth\Registration;
 
 use App\Auth\Command\Registration\Common\Confirm\Command;
 use App\UI\Http\Action\AbstractAction;

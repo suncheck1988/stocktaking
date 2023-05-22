@@ -15,14 +15,13 @@ return static function (App $app): void {
         $group->group('/registration', function (Group $group1): void {
             $group1->group('/client', function (Group $group2): void {
                 $group2->post('/request', Action\V1\Auth\Registration\Client\RequestAction::class);
-                $group2->post('/confirm', Action\V1\Auth\Registration\Client\ConfirmAction::class);
-                $group2->post('/recreate-email-confirm', Action\V1\Auth\Registration\Client\RecreateEmailConfirmAction::class);
             });
             $group1->group('/employee', function (Group $group2): void {
                 $group2->post('/request', Action\V1\Auth\Registration\Employee\RequestAction::class);
-                $group2->post('/confirm', Action\V1\Auth\Registration\Employee\ConfirmAction::class);
-                $group2->post('/recreate-email-confirm', Action\V1\Auth\Registration\Employee\RecreateEmailConfirmAction::class);
             });
+
+            $group1->post('/confirm', Action\V1\Auth\Registration\ConfirmAction::class);
+            $group1->post('/recreate-email-confirm', Action\V1\Auth\Registration\RecreateEmailConfirmAction::class);
         });
 
         $group->group('/login', function (Group $group1): void {

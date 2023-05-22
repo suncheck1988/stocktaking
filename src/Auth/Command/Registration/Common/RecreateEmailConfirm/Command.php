@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\Command\Registration\Client\RecreateEmailConfirm;
+namespace App\Auth\Command\Registration\Common\RecreateEmailConfirm;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\Command\Registration\Client\Confirm;
+namespace App\Auth\Command\Registration\Common\Confirm;
 
 use App\Application\Exception\DomainException;
 use App\Application\ValueObject\Uuid;

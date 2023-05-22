@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\Command\Registration\Client\RecreateEmailConfirm;
+namespace App\Auth\Command\Registration\Common\RecreateEmailConfirm;
 
 use App\Application\Exception\DomainException;
 use App\Application\ValueObject\Uuid;
-use App\Auth\Command\Registration\Client\Confirm\Command;
 use App\Auth\Model\User\UserEmailConfirm\Status;
 use App\Auth\Model\User\UserEmailConfirm\Type;
 use App\Auth\Repository\UserRepository;
