@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\UI\Http\Action\V1\Auth\Registration\Employee;
+namespace App\UI\Http\Action\V1\Auth\Registration\Client;
 
-use App\Auth\Command\Registration\Employee\RecreateEmailConfirm\Command;
+use App\Auth\Command\Registration\Common\RecreateEmailConfirm\Command;
 use App\UI\Http\Action\AbstractAction;
 use App\UI\Http\ParamsExtractor;
 use OpenApi\Attributes as OA;
@@ -13,8 +13,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 #[
     OA\Post(
-        path: '/v1/auth/registration/client/recreate-email-confirm',
-        description: 'Создание новой ссылки для подтверждения электронной почты сотрудника клиента после запроса на регистрацию',
+        path: '/v1/auth/registration/recreate-email-confirm',
+        description: 'Создание новой ссылки для подтверждения электронной почты пользователя после запроса на регистрацию',
         requestBody: new OA\RequestBody(
             content: new OA\JsonContent(
                 required: ['token'],
@@ -27,7 +27,7 @@ use Psr\Http\Message\ServerRequestInterface;
         responses: [
             new OA\Response(
                 response: 204,
-                description: 'При успешном создании новой ссылки для подтверждения регистрации сотрудника клиента, будет отправлено письмо с ссылкой для подтверждения на указанный email',
+                description: 'При успешном создании новой ссылки для подтверждения регистрации пользователя, будет отправлено письмо с ссылкой для подтверждения на указанный email',
             ),
             new OA\Response(
                 response: 400,

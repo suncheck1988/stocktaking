@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UI\Http\Action\V1\Auth\Registration\Client;
 
-use App\Auth\Command\Registration\Client\Confirm\Command;
+use App\Auth\Command\Registration\Common\Confirm\Command;
 use App\UI\Http\Action\AbstractAction;
 use App\UI\Http\ParamsExtractor;
 use OpenApi\Attributes as OA;
@@ -13,8 +13,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 #[
     OA\Post(
-        path: '/v1/auth/registration/client/confirm',
-        description: 'Подтверждение электронной почты клиента после запроса на регистрацию',
+        path: '/v1/auth/registration/confirm',
+        description: 'Подтверждение электронной почты пользователя после запроса на регистрацию',
         requestBody: new OA\RequestBody(
             content: new OA\JsonContent(
                 required: ['token'],
