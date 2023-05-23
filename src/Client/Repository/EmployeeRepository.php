@@ -7,6 +7,7 @@ namespace App\Client\Repository;
 use App\Application\Dto\PaginationDto;
 use App\Application\Exception\NotFoundException;
 use App\Application\Repository\AbstractRepository;
+use App\Application\Repository\ClientableRepositoryInterface;
 use App\Application\ValueObject\Uuid;
 use App\Client\Dto\EmployeeSearchDto;
 use App\Client\Model\Client\Client;
@@ -15,7 +16,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 
-final class EmployeeRepository extends AbstractRepository
+final class EmployeeRepository extends AbstractRepository implements ClientableRepositoryInterface
 {
     public function add(Employee $employee): void
     {

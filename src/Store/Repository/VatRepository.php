@@ -6,6 +6,7 @@ namespace App\Store\Repository;
 
 use App\Application\Exception\NotFoundException;
 use App\Application\Repository\AbstractRepository;
+use App\Application\Repository\ClientableRepositoryInterface;
 use App\Application\ValueObject\Uuid;
 use App\Client\Model\Client\Client;
 use App\Store\Dto\VatSearchDto;
@@ -15,7 +16,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 
-final class VatRepository extends AbstractRepository
+final class VatRepository extends AbstractRepository implements ClientableRepositoryInterface
 {
     public function add(Vat $vat): void
     {

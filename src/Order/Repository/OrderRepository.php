@@ -7,6 +7,7 @@ namespace App\Order\Repository;
 use App\Application\Dto\PaginationDto;
 use App\Application\Exception\NotFoundException;
 use App\Application\Repository\AbstractRepository;
+use App\Application\Repository\ClientableRepositoryInterface;
 use App\Application\ValueObject\Uuid;
 use App\Client\Model\Client\Client;
 use App\Order\Dto\OrderSearchDto;
@@ -15,7 +16,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 
-final class OrderRepository extends AbstractRepository
+final class OrderRepository extends AbstractRepository implements ClientableRepositoryInterface
 {
     public function add(Order $order): void
     {

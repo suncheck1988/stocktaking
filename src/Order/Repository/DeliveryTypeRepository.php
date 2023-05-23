@@ -7,13 +7,14 @@ namespace App\Order\Repository;
 use App\Application\Dto\PaginationDto;
 use App\Application\Exception\NotFoundException;
 use App\Application\Repository\AbstractRepository;
+use App\Application\Repository\ClientableRepositoryInterface;
 use App\Application\ValueObject\Uuid;
 use App\Client\Model\Client\Client;
 use App\Order\Model\DeliveryType\DeliveryType;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 
-final class DeliveryTypeRepository extends AbstractRepository
+final class DeliveryTypeRepository extends AbstractRepository implements ClientableRepositoryInterface
 {
     public function add(DeliveryType $deliveryType): void
     {
