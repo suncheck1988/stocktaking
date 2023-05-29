@@ -27,9 +27,12 @@ final class CategoryRepository extends AbstractRepository implements ClientableR
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(?CategorySearchDto $searchDto = null): int
+    public function count(Client $client, ?CategorySearchDto $searchDto = null): int
     {
         $qb = $this->entityRepository->createQueryBuilder('c');
+
+        $qb->where('c.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -77,10 +80,14 @@ final class CategoryRepository extends AbstractRepository implements ClientableR
      * @return Category[]
      */
     public function fetchAll(
+        Client $client,
         ?CategorySearchDto $searchDto = null,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('c');
+
+        $qb->where('c.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);

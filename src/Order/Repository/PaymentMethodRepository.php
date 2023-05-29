@@ -25,9 +25,12 @@ final class PaymentMethodRepository extends AbstractRepository implements Client
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(): int
+    public function count(Client $client): int
     {
         $qb = $this->entityRepository->createQueryBuilder('pm');
+
+        $qb->where('pm.client = :client')
+            ->setParameter('client', $client);
 
         $qb->select('COUNT(pm) as pmCount');
 
@@ -71,9 +74,13 @@ final class PaymentMethodRepository extends AbstractRepository implements Client
      * @return PaymentMethod[]
      */
     public function fetchAll(
+        Client $client,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('pm');
+
+        $qb->where('pm.client = :client')
+            ->setParameter('client', $client);
 
         $qb->orderBy('pm.createdAt', 'DESC');
 

@@ -27,9 +27,12 @@ final class OrderRepository extends AbstractRepository implements ClientableRepo
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(?OrderSearchDto $searchDto = null): int
+    public function count(Client $client, ?OrderSearchDto $searchDto = null): int
     {
         $qb = $this->entityRepository->createQueryBuilder('o');
+
+        $qb->where('o.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -61,10 +64,14 @@ final class OrderRepository extends AbstractRepository implements ClientableRepo
      * @return Order[]
      */
     public function fetchAll(
+        Client $client,
         ?OrderSearchDto $searchDto = null,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('o');
+
+        $qb->where('o.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);

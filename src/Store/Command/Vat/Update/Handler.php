@@ -32,7 +32,7 @@ class Handler
             $searchDto->isDefault = true;
             $searchDto->clientId = $this->authContext->getClient()->getId()->getValue();
 
-            $vats = $this->vatRepository->fetchAll($searchDto);
+            $vats = $this->vatRepository->fetchAll($this->authContext->getClient(), $searchDto);
             foreach ($vats as $item) {
                 $item->changeDefault(false);
             }

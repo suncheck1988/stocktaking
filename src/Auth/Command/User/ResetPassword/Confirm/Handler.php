@@ -36,6 +36,9 @@ class Handler
         if ($userEmailConfirm === null) {
             throw new DomainException('Подтверждение сброса пароля для указанной ссылки не найдено');
         }
+        if ($userEmailConfirm->getStatus()->isConfirmed()) {
+            throw new DomainException('Доступ к учетной записи уже восстановлена');
+        }
         if ($userEmailConfirm->isExpired()) {
             $userEmailConfirm->expired();
 

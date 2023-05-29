@@ -24,13 +24,13 @@ class UserEmailConfirm
     private User $user;
 
     #[ORM\Column(type: 'uuid')]
-    protected Uuid $token;
+    private Uuid $token;
 
     #[ORM\Column(type: 'auth_user_email_confirm_type')]
     private Type $type;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    protected DateTimeImmutable $expirationDate;
+    private DateTimeImmutable $expirationDate;
 
     #[ORM\Column(type: 'auth_user_email_confirm_status')]
     private Status $status;
@@ -66,7 +66,7 @@ class UserEmailConfirm
 
     public function isExpired(): bool
     {
-        return $this->expirationDate >= new DateTimeImmutable();
+        return new DateTimeImmutable() > $this->expirationDate;
     }
 
     public function getUser(): User

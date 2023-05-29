@@ -10,6 +10,7 @@ use App\Auth\Service\User\UserPermissionUpdater;
 use App\Client\Repository\EmployeeRepository;
 use App\Data\Flusher;
 use Assert\AssertionFailedException;
+use Doctrine\ORM\NonUniqueResultException;
 
 class Handler
 {
@@ -23,6 +24,7 @@ class Handler
 
     /**
      * @throws AssertionFailedException
+     * @throws NonUniqueResultException
      */
     public function handle(Command $command): void
     {

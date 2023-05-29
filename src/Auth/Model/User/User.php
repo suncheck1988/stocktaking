@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Model\User;
 
+use App\Application\Exception\Code\ExceptionCodeEnum;
 use App\Application\Exception\DomainException;
 use App\Application\Exception\InvalidStatusTransitionException;
 use App\Application\Model\IdentifiableTrait;
@@ -48,7 +49,7 @@ class User
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserEmailConfirm::class, cascade: ['all'])]
     private Collection $userEmailConfirms;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserPermission::class, cascade: ['all'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserPermission::class, cascade: ['all'], orphanRemoval: true)]
     private Collection $userPermissions;
 
     #[ORM\Column(type: 'auth_user_role')]
@@ -72,6 +73,7 @@ class User
         $this->id = $id;
         $this->name = $name;
         $this->email = $email;
+        $this->isEmailConfirmed = false;
         $this->role = $role;
         $this->status = Status::new();
 
@@ -179,7 +181,7 @@ class User
         }
 
         if (!password_verify($password, $userAuth->getHash())) {
-            throw new DomainException('Не верный пароль');
+            throw new DomainException('Не верный пароль', ExceptionCodeEnum::PASSWORD_INCORRECT->value);
         }
     }
 
@@ -191,6 +193,12 @@ class User
         }
 
         $userAuth->changeHash($hash);
+    }
+
+    public function update(string $name): void
+    {
+        $this->name = $name;
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function getName(): string
@@ -237,7 +245,7 @@ class User
         $criteria->where($expr1)->andWhere($expr2)->setMaxResults(1);
 
         /** @var UserEmailConfirm|null $result */
-        $result = $this->userEmailConfirms->matching($criteria);
+        $result = $this->userEmailConfirms->matching($criteria)[0];
 
         return $result;
     }
@@ -255,7 +263,7 @@ class User
         $criteria->where($expr1)->andWhere($expr2)->setMaxResults(1);
 
         /** @var UserEmailConfirm|null $result */
-        $result = $this->userEmailConfirms->matching($criteria);
+        $result = $this->userEmailConfirms->matching($criteria)[0];
 
         return $result;
     }

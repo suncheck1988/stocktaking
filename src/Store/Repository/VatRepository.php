@@ -23,6 +23,12 @@ final class VatRepository extends AbstractRepository implements ClientableReposi
         $this->entityManager->persist($vat);
     }
 
+    /** @todo */
+    public function count(Client $client): int
+    {
+        return 0;
+    }
+
     public function get(Uuid $id, Client $client): Vat
     {
         /** @var Vat|null $model */
@@ -76,9 +82,12 @@ final class VatRepository extends AbstractRepository implements ClientableReposi
     /**
      * @return Vat[]
      */
-    public function fetchAll(?VatSearchDto $searchDto = null): array
+    public function fetchAll(Client $client, ?VatSearchDto $searchDto = null): array
     {
         $qb = $this->entityRepository->createQueryBuilder('v');
+
+        $qb->where('v.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);

@@ -27,9 +27,12 @@ final class UnitRepository extends AbstractRepository implements ClientableRepos
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(?UnitSearchDto $searchDto = null): int
+    public function count(Client $client, ?UnitSearchDto $searchDto = null): int
     {
         $qb = $this->entityRepository->createQueryBuilder('un');
+
+        $qb->where('un.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -77,10 +80,14 @@ final class UnitRepository extends AbstractRepository implements ClientableRepos
      * @return Unit[]
      */
     public function fetchAll(
+        Client $client,
         ?UnitSearchDto $searchDto = null,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('un');
+
+        $qb->where('un.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);

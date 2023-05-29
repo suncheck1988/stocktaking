@@ -39,8 +39,11 @@ return static function (App $app): void {
     });
 
     $app->group('/v1/employee', function (Group $group): void {
+        $group->get('', Action\V1\Employee\IndexAction::class);
         $group->group('/{id}', function (Group $group1): void {
+            $group1->get('', Action\V1\Employee\ViewAction::class);
             $group1->patch('', Action\V1\Employee\UpdateAction::class);
+            /** @todo пока не используется */
             $group1->post('/change-permission', Action\V1\Employee\ChangePermissionAction::class);
             $group1->post('/block', Action\V1\Employee\BlockAction::class);
             $group1->post('/active', Action\V1\Employee\ActiveAction::class);
@@ -48,8 +51,10 @@ return static function (App $app): void {
     });
 
     $app->group('/v1/counterparty', function (Group $group): void {
+        $group->get('', Action\V1\Counterparty\IndexAction::class);
         $group->post('', Action\V1\Counterparty\CreateAction::class);
         $group->group('/{id}', function (Group $group1): void {
+            $group1->get('', Action\V1\Counterparty\ViewAction::class);
             $group1->patch('', Action\V1\Counterparty\UpdateAction::class);
             $group1->post('/active', Action\V1\Counterparty\ActiveAction::class);
             $group1->post('/inactive', Action\V1\Counterparty\InactiveAction::class);

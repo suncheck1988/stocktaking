@@ -6,10 +6,10 @@ namespace App\Client\Command\Employee\Block;
 
 use App\Application\ValueObject\Uuid;
 use App\Auth\Service\AuthContext;
-use App\Client\Command\Employee\Update\Command;
 use App\Client\Repository\EmployeeRepository;
 use App\Data\Flusher;
 use Assert\AssertionFailedException;
+use Doctrine\ORM\NonUniqueResultException;
 
 class Handler
 {
@@ -22,6 +22,7 @@ class Handler
 
     /**
      * @throws AssertionFailedException
+     * @throws NonUniqueResultException
      */
     public function handle(Command $command): void
     {

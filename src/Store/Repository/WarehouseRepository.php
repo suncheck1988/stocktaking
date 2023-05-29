@@ -27,9 +27,12 @@ final class WarehouseRepository extends AbstractRepository implements Clientable
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(?WarehouseSearchDto $searchDto = null): int
+    public function count(Client $client, ?WarehouseSearchDto $searchDto = null): int
     {
         $qb = $this->entityRepository->createQueryBuilder('w');
+
+        $qb->where('w.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -77,10 +80,14 @@ final class WarehouseRepository extends AbstractRepository implements Clientable
      * @return Warehouse[]
      */
     public function fetchAll(
+        Client $client,
         ?WarehouseSearchDto $searchDto = null,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('w');
+
+        $qb->where('w.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);

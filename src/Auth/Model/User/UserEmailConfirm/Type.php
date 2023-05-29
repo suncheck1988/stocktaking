@@ -12,6 +12,6 @@ use App\Application\ValueObject\EnumValueObject;
  */
 class Type extends EnumValueObject
 {
-    public const REGISTRAION = 100;
+    public const REGISTRATION = 100;
     public const PASSWORD_RESET = 200;
 }

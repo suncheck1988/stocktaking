@@ -10,11 +10,11 @@ use App\Application\Repository\AbstractRepository;
 use App\Application\ValueObject\Uuid;
 use App\Auth\Dto\UserSearchDto;
 use App\Auth\Model\User\Email;
-use App\Auth\Model\User\Role;
 use App\Auth\Model\User\Status;
 use App\Auth\Model\User\User;
 use App\Auth\Model\User\UserEmailConfirm\Status as UserEmailConfirmStatus;
 use App\Auth\Model\User\UserEmailConfirm\Type;
+use DateTimeImmutable;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
@@ -80,10 +80,19 @@ final class UserRepository extends AbstractRepository
         return $model;
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function getByEmail(Email $email): User
     {
         /** @var User|null $model */
-        $model = $this->entityRepository->findBy(['email' => $email->getValue()]);
+        $model = $this->entityRepository
+            ->createQueryBuilder('u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email->getValue())
+            ->getQuery()
+            ->getOneOrNullResult();
+
         if ($model === null) {
             throw new NotFoundException(sprintf('Пользователь с электронной почтой %s не найден', $email->getValue()));
         }
@@ -121,10 +130,11 @@ final class UserRepository extends AbstractRepository
             ->where('u = :user')
             ->andWhere('uec.type = :registrationType')
             ->andWhere('uec.status = :newStatus')
-            ->andWhere('uec.expirationDate < CURRENT_TIME')
+            ->andWhere('uec.expirationDate < :currentDateTime')
             ->setParameter('user', $user)
-            ->setParameter('registrationType', Type::REGISTRAION)
-            ->setParameter('newStatus', UserEmailConfirmStatus::NEW);
+            ->setParameter('registrationType', Type::REGISTRATION)
+            ->setParameter('newStatus', UserEmailConfirmStatus::NEW)
+            ->setParameter('currentDateTime', new DateTimeImmutable());
 
         return (int)$qb->getQuery()->getSingleScalarResult() > 0;
     }
@@ -132,13 +142,12 @@ final class UserRepository extends AbstractRepository
     /**
      * @throws NonUniqueResultException
      */
-    public function getActiveByEmail(string $email): User
+    public function getActiveByEmail(Email $email): User
     {
         $qb = $this->entityRepository->createQueryBuilder('u')
-            ->innerJoin('u.userAuth', 'ua')
-            ->where('ua.email = :email')
+            ->where('u.email = :email')
             ->andWhere('u.status = :activeStatus')
-            ->setParameter('email', $email)
+            ->setParameter('email', $email->getValue())
             ->setParameter('activeStatus', Status::ACTIVE)
             ->setMaxResults(1);
 
@@ -182,7 +191,7 @@ final class UserRepository extends AbstractRepository
             ->innerJoin('u.userEmailConfirms', 'uec')
             ->where('u.status = :activeStatus')
             ->andWhere('uec.token = :token')
-            ->setParameter('newStatus', Status::ACTIVE)
+            ->setParameter('activeStatus', Status::ACTIVE)
             ->setParameter('token', $token->getValue())
             ->setMaxResults(1);
 

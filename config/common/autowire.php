@@ -23,4 +23,5 @@ return [
     'App\UI\Http\Action\*\*Action' => $actionInit(),
     'App\UI\Http\Action\*\*\*Action' => $actionInit(),
     'App\UI\Http\Action\*\*\*\*Action' => $actionInit(),
+    'App\UI\Http\Action\*\*\*\*\*Action' => $actionInit(),
 ];

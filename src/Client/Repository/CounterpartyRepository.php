@@ -27,9 +27,12 @@ final class CounterpartyRepository extends AbstractRepository implements Clienta
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(?CounterpartySearchDto $searchDto = null): int
+    public function count(Client $client, ?CounterpartySearchDto $searchDto = null): int
     {
         $qb = $this->entityRepository->createQueryBuilder('cou');
+
+        $qb->where('cou.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -44,10 +47,14 @@ final class CounterpartyRepository extends AbstractRepository implements Clienta
      * @return Counterparty[]
      */
     public function fetchAll(
+        Client $client,
         ?CounterpartySearchDto $searchDto = null,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('cou');
+
+        $qb->where('cou.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -66,10 +73,21 @@ final class CounterpartyRepository extends AbstractRepository implements Clienta
         return $result;
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function get(Uuid $id, Client $client): Counterparty
     {
         /** @var Counterparty|null $model */
-        $model = $this->entityRepository->findBy(['id' => $id, 'client' => $client]);
+        $model = $this->entityRepository
+            ->createQueryBuilder('cou')
+            ->where('cou.id = :id')
+            ->andWhere('cou.client = :client')
+            ->setParameter('id', $id->getValue())
+            ->setParameter('client', $client)
+            ->getQuery()
+            ->getOneOrNullResult();
+
         if ($model === null) {
             throw new NotFoundException(
                 sprintf(
@@ -86,7 +104,19 @@ final class CounterpartyRepository extends AbstractRepository implements Clienta
     private function applySearchDto(QueryBuilder $qb, CounterpartySearchDto $searchDto): void
     {
         if ($searchDto->id !== null && $searchDto->id !== '') {
-            $qb->andWhere('сщг.id = :id')->setParameter('id', $searchDto->id);
+            $qb->andWhere('cou.id = :id')->setParameter('id', $searchDto->id);
+        }
+
+        if ($searchDto->name !== null && $searchDto->name !== '') {
+            $qb->andWhere('LOWER(cou.name) LIKE LOWER(:name)')->setParameter('name', '%' . $searchDto->name . '%');
+        }
+
+        if ($searchDto->email !== null && $searchDto->email !== '') {
+            $qb->andWhere('LOWER(cou.email) LIKE LOWER(:email)')->setParameter('email', '%' . $searchDto->email . '%');
+        }
+
+        if ($searchDto->status !== null) {
+            $qb->andWhere('cou.status = :status')->setParameter('status', $searchDto->status);
         }
     }
 

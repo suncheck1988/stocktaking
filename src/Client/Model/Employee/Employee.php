@@ -42,8 +42,9 @@ class Employee
         $this->createdAt = $date;
     }
 
-    public function update(bool $isFinanciallyResponsiblePerson): void
+    public function update(string $name, bool $isFinanciallyResponsiblePerson): void
     {
+        $this->user->update($name);
         $this->isFinanciallyResponsiblePerson = $isFinanciallyResponsiblePerson;
         $this->updatedAt = new DateTimeImmutable();
     }

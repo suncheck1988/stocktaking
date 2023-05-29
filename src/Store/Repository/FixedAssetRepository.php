@@ -27,9 +27,12 @@ final class FixedAssetRepository extends AbstractRepository implements Clientabl
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(?FixedAssetSearchDto $searchDto = null): int
+    public function count(Client $client, ?FixedAssetSearchDto $searchDto = null): int
     {
         $qb = $this->entityRepository->createQueryBuilder('fa');
+
+        $qb->where('fa.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -93,10 +96,14 @@ final class FixedAssetRepository extends AbstractRepository implements Clientabl
      * @return FixedAsset[]
      */
     public function fetchAll(
+        Client $client,
         ?FixedAssetSearchDto $searchDto = null,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('fa');
+
+        $qb->where('fa.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);

@@ -8,12 +8,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class Command
 {
+    /**
+     * @param int[] $permissions
+     */
     public function __construct(
         #[NotBlank]
         private readonly string $employeeId,
         #[NotBlank]
         private readonly string $name,
-        private readonly bool $isFinanciallyResponsiblePerson
+        private readonly bool $isFinanciallyResponsiblePerson,
+        private readonly array $permissions
     ) {
     }
 
@@ -30,5 +34,13 @@ class Command
     public function isFinanciallyResponsiblePerson(): bool
     {
         return $this->isFinanciallyResponsiblePerson;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getPermissions(): array
+    {
+        return $this->permissions;
     }
 }

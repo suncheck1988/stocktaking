@@ -10,4 +10,6 @@ use App\Client\Model\Client\Client;
 interface ClientableRepositoryInterface
 {
     public function get(Uuid $id, Client $client): object;
+    public function fetchAll(Client $client): array;
+    public function count(Client $client): int;
 }

@@ -8,9 +8,11 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Interfaces\CallableResolverInterface;
 use Slim\Middleware\ErrorMiddleware;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 return [
     ErrorMiddleware::class => static function (ContainerInterface $container): ErrorMiddleware {
+        $translator = $container->get(TranslatorInterface::class);
         $callableResolver = $container->get(CallableResolverInterface::class);
         $responseFactory = $container->get(ResponseFactoryInterface::class);
         /**
@@ -29,7 +31,7 @@ return [
 
         $logger = $container->get(LoggerInterface::class);
 
-        $errorHandler = new ErrorHandler($callableResolver, $responseFactory, $logger);
+        $errorHandler = new ErrorHandler($translator, $callableResolver, $responseFactory, $logger);
 
         $middleware->setDefaultErrorHandler($errorHandler);
 

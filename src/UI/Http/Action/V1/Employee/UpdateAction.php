@@ -60,10 +60,16 @@ class UpdateAction extends AbstractAction
     {
         $paramsExtractor = ParamsExtractor::fromRequest($request);
 
+        $user = new ParamsExtractor($paramsExtractor->getSimpleArray('user'));
+
+        /** @var array<array-key, int> $permissions */
+        $permissions = $user->getSimpleArray('permissions');
+
         return new Command(
             $this->resolveArg('id'),
-            trim($paramsExtractor->getString('name')),
-            $paramsExtractor->getBool('isFinanciallyResponsiblePerson')
+            trim($user->getString('name')),
+            $paramsExtractor->getBool('isFinanciallyResponsiblePerson'),
+            $permissions
         );
     }
 }

@@ -6,3 +6,4 @@
 /var/cache/*
 public/uploads/*
 .phpunit.result.cache
+/nbproject/private/

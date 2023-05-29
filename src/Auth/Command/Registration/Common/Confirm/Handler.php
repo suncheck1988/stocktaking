@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Command\Registration\Common\Confirm;
 
+use App\Application\Exception\Code\ExceptionCodeEnum;
 use App\Application\Exception\DomainException;
 use App\Application\ValueObject\Uuid;
 use App\Auth\Model\User\UserEmailConfirm\Status;
@@ -43,7 +44,10 @@ class Handler
 
             $this->flusher->flush();
 
-            throw new DomainException('Срок действия ссылки для подтверждения электронной почты истек');
+            throw new DomainException(
+                'Срок действия ссылки для подтверждения электронной почты истек',
+                ExceptionCodeEnum::EMAIL_CONFIRM_EXPIRED->value
+            );
         }
 
         $user->active();

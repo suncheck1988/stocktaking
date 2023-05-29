@@ -6,21 +6,24 @@ namespace App\Client\Command\Employee\Update;
 
 use App\Application\ValueObject\Uuid;
 use App\Auth\Service\AuthContext;
+use App\Auth\Service\User\UserPermissionUpdater;
 use App\Client\Repository\EmployeeRepository;
 use App\Data\Flusher;
 use Assert\AssertionFailedException;
+use Doctrine\ORM\NonUniqueResultException;
 
 class Handler
 {
     public function __construct(
         private readonly AuthContext $authContext,
         private readonly EmployeeRepository $employeeRepository,
+        private readonly UserPermissionUpdater $userPermissionUpdater,
         private readonly Flusher $flusher
     ) {
     }
 
     /**
-     * @throws AssertionFailedException
+     * @throws AssertionFailedException|NonUniqueResultException
      */
     public function handle(Command $command): void
     {
@@ -28,7 +31,9 @@ class Handler
 
         $employee = $this->employeeRepository->get(new Uuid($command->getEmployeeId()), $client);
 
-        $employee->update($command->isFinanciallyResponsiblePerson());
+        $employee->update($command->getName(), $command->isFinanciallyResponsiblePerson());
+
+        $this->userPermissionUpdater->update($employee->getUser(), $command->getPermissions());
 
         $this->flusher->flush();
     }

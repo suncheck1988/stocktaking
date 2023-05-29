@@ -27,9 +27,14 @@ final class EmployeeRepository extends AbstractRepository implements ClientableR
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(?EmployeeSearchDto $searchDto = null): int
+    public function count(Client $client, ?EmployeeSearchDto $searchDto = null): int
     {
         $qb = $this->entityRepository->createQueryBuilder('em');
+
+        $qb->select(['em', 'u'])
+            ->innerJoin('em.user', 'u')
+            ->where('em.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -44,10 +49,16 @@ final class EmployeeRepository extends AbstractRepository implements ClientableR
      * @return Employee[]
      */
     public function fetchAll(
+        Client $client,
         ?EmployeeSearchDto $searchDto = null,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('em');
+
+        $qb->select(['em', 'u'])
+            ->innerJoin('em.user', 'u')
+            ->where('em.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -66,10 +77,20 @@ final class EmployeeRepository extends AbstractRepository implements ClientableR
         return $result;
     }
 
+    /**
+     * @throws NonUniqueResultException
+     */
     public function get(Uuid $id, Client $client): Employee
     {
         /** @var Employee|null $model */
-        $model = $this->entityRepository->findBy(['id' => $id, 'client' => $client]);
+        $model = $this->entityRepository->createQueryBuilder('em')
+            ->where('em.id = :id')
+            ->andWhere('em.client = :client')
+            ->setParameter('id', $id->getValue())
+            ->setParameter('client', $client)
+            ->getQuery()
+            ->getOneOrNullResult();
+
         if ($model === null) {
             throw new NotFoundException(
                 sprintf(
@@ -86,7 +107,7 @@ final class EmployeeRepository extends AbstractRepository implements ClientableR
     public function getById(Uuid $id): Employee
     {
         /** @var Employee|null $model */
-        $model = $this->entityRepository->findBy(['id' => $id]);
+        $model = $this->entityRepository->find($id);
         if ($model === null) {
             throw new NotFoundException(sprintf('Сотрудник с id %s не найден', $id->getValue()));
         }
@@ -98,6 +119,14 @@ final class EmployeeRepository extends AbstractRepository implements ClientableR
     {
         if ($searchDto->id !== null && $searchDto->id !== '') {
             $qb->andWhere('em.id = :id')->setParameter('id', $searchDto->id);
+        }
+
+        if ($searchDto->name !== null && $searchDto->name !== '') {
+            $qb->andWhere('LOWER(u.name) LIKE LOWER(:name)')->setParameter('name', '%' . $searchDto->name . '%');
+        }
+
+        if ($searchDto->status !== null) {
+            $qb->andWhere('u.status = :status')->setParameter('status', $searchDto->status);
         }
     }
 

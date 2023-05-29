@@ -29,9 +29,12 @@ final class PositionRepository extends AbstractRepository implements ClientableR
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(?PositionSearchDto $searchDto = null): int
+    public function count(Client $client, ?PositionSearchDto $searchDto = null): int
     {
         $qb = $this->entityRepository->createQueryBuilder('p');
+
+        $qb->where('p.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);
@@ -114,10 +117,14 @@ final class PositionRepository extends AbstractRepository implements ClientableR
      * @return Position[]
      */
     public function fetchAll(
+        Client $client,
         ?PositionSearchDto $searchDto = null,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('p');
+
+        $qb->where('p.client = :client')
+            ->setParameter('client', $client);
 
         if ($searchDto !== null) {
             $this->applySearchDto($qb, $searchDto);

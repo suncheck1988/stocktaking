@@ -60,7 +60,7 @@ services:
     redis:
         image: redis:5.0-alpine
         ports:
-          - '${FORWARD_REDIS_PORT:-6321}:6379'
+          - '${REDIS_PORT}:6379'
         volumes:
           - redis:/data
         networks:
@@ -69,8 +69,8 @@ services:
     mailer:
       image: 'mailhog/mailhog:latest'
       ports:
-        - '${MAILER_PORT:-1025}:1025'
-        - '${MAILER_DASHBOARD_PORT:-8025}:8025'
+        - '${MAILER_PORT}:1025'
+        - '${MAILER_DASHBOARD_PORT}:8025'
       networks:
         docker_default:
 

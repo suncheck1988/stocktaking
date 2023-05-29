@@ -25,11 +25,13 @@ final class DeliveryTypeRepository extends AbstractRepository implements Clienta
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function count(): int
+    public function count(Client $client): int
     {
         $qb = $this->entityRepository->createQueryBuilder('dt');
 
-        $qb->select('COUNT(dt) as dtCount');
+        $qb->select('COUNT(dt) as dtCount')
+            ->where('dt.client = :client')
+            ->setParameter('client', $client);
 
         return (int)$qb->getQuery()->getSingleScalarResult();
     }
@@ -71,9 +73,13 @@ final class DeliveryTypeRepository extends AbstractRepository implements Clienta
      * @return DeliveryType[]
      */
     public function fetchAll(
+        Client $client,
         ?PaginationDto $paginationDto = null
     ): array {
         $qb = $this->entityRepository->createQueryBuilder('dt');
+
+        $qb->where('dt.client = :client')
+            ->setParameter('client', $client);
 
         $qb->orderBy('dt.createdAt', 'DESC');
 

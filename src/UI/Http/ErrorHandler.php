@@ -9,19 +9,38 @@ use App\Application\Exception\DomainException;
 use App\Application\Exception\NotFoundException;
 use App\Application\Exception\ValidationException;
 use Assert\InvalidArgumentException;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpUnauthorizedException;
+use Slim\Interfaces\CallableResolverInterface;
 use Symfony\Component\Serializer\Exception\ExtraAttributesException;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\Exception\PartialDenormalizationException;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @psalm-suppress PropertyNotSetInConstructor
  */
 class ErrorHandler extends LogErrorHandler
 {
+    protected CallableResolverInterface $callableResolver;
+
+    protected ResponseFactoryInterface $responseFactory;
+
+    protected LoggerInterface $logger;
+
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+        CallableResolverInterface $callableResolver,
+        ResponseFactoryInterface $responseFactory,
+        ?LoggerInterface $logger = null,
+    ) {
+        parent::__construct($callableResolver, $responseFactory, $logger);
+    }
+
     protected function respond(): ResponseInterface
     {
         $exception = $ex = $this->exception;
