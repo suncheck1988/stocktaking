@@ -1,0 +1,46 @@
+version: "3.7"
+services:
+  php-cli_test:
+    build:
+      context: docker
+      dockerfile: development/php-cli/Dockerfile
+    environment:
+      APP_ENV: test
+      APP_DEBUG: ${APP_DEBUG}
+      POSTGRES_HOST: ${POSTGRES_TEST_HOST}
+      POSTGRES_DATABASE: ${POSTGRES_TEST_DATABASE}
+      POSTGRES_USER: ${POSTGRES_TEST_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD}
+    networks:
+      - docker_default
+    volumes:
+      - ./:/app
+
+  postgres_test:
+    image: postgres:13.3-alpine
+    networks:
+      - docker_default
+    volumes:
+      - postgres_test:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DATABASE: ${POSTGRES_TEST_DATABASE}
+      POSTGRES_USER: ${POSTGRES_TEST_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD}
+    ports:
+      - "${POSTGRES_TEST_PORT}:5432"
+
+  redis_test:
+    image: redis:5.0-alpine
+    ports:
+      - '${FORWARD_REDIS_PORT:-6321}:6379'
+    volumes:
+      - redis_test:/data
+    networks:
+      - docker_default
+
+networks:
+  docker_default:
+
+volumes:
+  postgres_test:
+  redis_test:

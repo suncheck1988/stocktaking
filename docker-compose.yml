@@ -1,0 +1,82 @@
+version: "3.7"
+services:
+    nginx:
+        build:
+          context: docker
+          dockerfile: development/nginx/Dockerfile
+        volumes:
+          - ./:/app
+        networks:
+          docker_default:
+        ports:
+          - "${NGINX_PORT}:80"
+
+    php-fpm:
+        build:
+          context: docker
+          dockerfile: development/php-fpm/Dockerfile
+        environment:
+          APP_ENV: ${APP_ENV}
+          APP_DEBUG: ${APP_DEBUG}
+          POSTGRES_HOST: ${POSTGRES_HOST}
+          POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+          POSTGRES_USER: ${POSTGRES_USER}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+          PHP_IDE_CONFIG: serverName=localhost
+        networks:
+          docker_default:
+        volumes:
+          - ./:/app
+
+    php-cli:
+        build:
+          context: docker
+          dockerfile: development/php-cli/Dockerfile
+        environment:
+          APP_ENV: ${APP_ENV}
+          APP_DEBUG: ${APP_DEBUG}
+          POSTGRES_HOST: ${POSTGRES_HOST}
+          POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+          POSTGRES_USER: ${POSTGRES_USER}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        networks:
+          docker_default:
+        volumes:
+          - ./:/app
+
+    postgres:
+        image: postgres:13.3-alpine
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DATABASE: ${POSTGRES_DATABASE}
+        volumes:
+          - postgres:/var/lib/postgresql/data
+        networks:
+          docker_default:
+        ports:
+          - "${POSTGRES_PORT}:5432"
+
+    redis:
+        image: redis:5.0-alpine
+        ports:
+          - '${REDIS_PORT}:6379'
+        volumes:
+          - redis:/data
+        networks:
+          docker_default:
+
+    mailer:
+      image: 'mailhog/mailhog:latest'
+      ports:
+        - '${MAILER_PORT}:1025'
+        - '${MAILER_DASHBOARD_PORT}:8025'
+      networks:
+        docker_default:
+
+networks:
+  docker_default:
+
+volumes:
+    postgres:
+    redis:

@@ -1,0 +1,62 @@
+version: "3.7"
+services:
+  nginx:
+    image: ${REGISTRY}/stocktaking-api-nginx:${IMAGE_TAG}
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/html:/var/www/html:ro
+    networks:
+      docker_default:
+
+  php-fpm:
+    image: ${REGISTRY}/stocktaking-api-php-fpm:${IMAGE_TAG}
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+      POSTGRES_HOST: postgres
+      POSTGRES_DATABASE: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      docker_default:
+
+  php-cli:
+    image: ${REGISTRY}/stocktaking-api-php-cli:${IMAGE_TAG}
+    environment:
+      APP_ENV: prod
+      APP_DEBUG: 0
+      POSTGRES_HOST: postgres
+      POSTGRES_DATABASE: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      docker_default:
+
+  postgres:
+    image: postgres:13.3-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DATABASE: app
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      docker_default:
+
+  redis:
+    image: redis:5.0-alpine
+    volumes:
+      - redis:/data
+    networks:
+      docker_default:
+
+networks:
+  docker_default:
+
+volumes:
+  postgres:
+  redis:

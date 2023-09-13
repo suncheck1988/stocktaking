@@ -1,0 +1,9 @@
+.idea
+.env
+/vendor/
+/var/docker
+/var/log/*
+/var/cache/*
+public/uploads/*
+.phpunit.result.cache
+/nbproject/private/
