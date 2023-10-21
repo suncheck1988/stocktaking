@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Application\ErrorHandler\SentryDecorator;
+use App\Application\Service\Sentry\Sentry;
 use App\UI\Http\ErrorHandler;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -33,7 +35,12 @@ return [
 
         $errorHandler = new ErrorHandler($translator, $callableResolver, $responseFactory, $logger);
 
-        $middleware->setDefaultErrorHandler($errorHandler);
+        $middleware->setDefaultErrorHandler(
+            new SentryDecorator(
+                $errorHandler,
+                $container->get(Sentry::class)
+            )
+        );
 
         return $middleware;
     },

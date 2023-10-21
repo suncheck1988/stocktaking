@@ -29,9 +29,9 @@ docker-build:
 	docker-compose build --pull
 
 api-clear:
-	docker run --rm -v ${PWD}/:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/* var/test/* && mkdir -p var/log/nginx && touch var/log/nginx/access.log && touch var/log/nginx/error.log'
+	docker run --rm -v ${PWD}/:/app -w /app alpine sh -c 'rm -rf var/cache/* var/log/* var/test/*'
 
-api-init: api-permissions api-composer-install api-wait-db api-migrations api-fixtures
+api-init: api-permissions api-composer-install api-wait-db api-migrations
 
 api-permissions:
 	docker run --rm -v ${PWD}/:/app -w /app alpine chmod 777 var/cache var/log var/test
@@ -47,9 +47,6 @@ api-wait-db:
 
 api-migrations:
 	docker-compose run --rm php-cli composer app migrations:migrate -- --no-interaction
-
-api-fixtures:
-	docker-compose run --rm php-cli composer app fixtures:load
 
 api-check: api-validate-schema api-lint api-analyze
 
@@ -90,14 +87,19 @@ deploy:
 	rm -f docker-compose-production-env.yml
 
 	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "COMPOSE_PROJECT_NAME=stocktaking-api" >> .env'
-	ssh -o StrictHostKeyChecking=no -P ${PORT} 'cd site_${BUILD_NUMBER} && echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env'
-	ssh -o StrictHostKeyChecking=no -P ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_HOST=${MAILER_HOST}" >> .env'
-	ssh -o StrictHostKeyChecking=no -P ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_PORT=${MAILER_PORT}" >> .env'
-	ssh -o StrictHostKeyChecking=no -P ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_USERNAME=${MAILER_USERNAME}" >> .env'
-	ssh -o StrictHostKeyChecking=no -P ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_PASSWORD=${MAILER_PASSWORD}" >> .env'
-	ssh -o StrictHostKeyChecking=no -P ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_FROM_EMAIL=${MAILER_FROM_EMAIL}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_HOST=${MAILER_HOST}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_PORT=${MAILER_PORT}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_USERNAME=${MAILER_USERNAME}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_PASSWORD=${MAILER_PASSWORD}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "MAILER_FROM_EMAIL=${MAILER_FROM_EMAIL}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "REDIS_HOST=${REDIS_HOST}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "FRONTEND_URL=${FRONTEND_URL}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "APP_AUTH_SECRET_KEY=${APP_AUTH_SECRET_KEY}" >> .env'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && echo "SENTRY_DSN=${SENTRY_DSN}" >> .env'
 
 	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && docker compose up --build --remove-orphans -d'
+	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'cd site_${BUILD_NUMBER} && docker compose run --rm php-cli php bin/console.php migrations:migrate --no-interaction'
 	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'rm -f site'
 	ssh -o StrictHostKeyChecking=no deploy@${HOST} -p ${PORT} 'ln -sr site_${BUILD_NUMBER} site'
 

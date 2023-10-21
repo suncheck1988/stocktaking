@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'config' => [
         'logger' => [
-            'debug' => true,
+            'debug' => false,
             'file' => null,
             'stderr' => true,
         ],

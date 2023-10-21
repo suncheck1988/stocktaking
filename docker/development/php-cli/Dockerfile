@@ -1,13 +1,8 @@
 FROM php:8.1.1-cli-alpine
 
-ENV XDEBUG_VERSION 3.1.2
-
-RUN apk add --no-cache postgresql-dev bash coreutils git \
+RUN apk add --no-cache postgresql-dev bash coreutils \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && git clone --branch $XDEBUG_VERSION --depth 1 https://github.com/xdebug/xdebug.git /usr/src/php/ext/xdebug \
-    && docker-php-ext-configure xdebug --enable-xdebug-dev \
-    && docker-php-ext-install pdo_pgsql mysqli pdo_mysql xdebug \
-    && apk del git
+    && docker-php-ext-install pdo_pgsql
 
 RUN mkdir -p /usr/src/php/ext/redis; \
     curl -fsSL https://pecl.php.net/get/redis --ipv4 | tar xvz -C "/usr/src/php/ext/redis" --strip 1; \

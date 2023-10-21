@@ -16,12 +16,19 @@ pipeline {
         ).trim()
         GIT_DIFF = sh(
             returnStdout: true,
-            script: "git diff --name-only ${env.GIT_DIFF_BASE_COMMIT} HEAD -- api || echo 'all'"
+            script: "git diff --name-only ${env.GIT_DIFF_BASE_COMMIT} HEAD -- . || echo 'all'"
         ).trim()
         GIT_DIFF_ROOT = sh(
             returnStdout: true,
             script: "{ git diff --name-only ${env.GIT_DIFF_BASE_COMMIT} HEAD -- . || echo 'all'; } | { grep -v / - || true; }"
         ).trim()
+        POSTGRES_HOST = 'postgres'
+        POSTGRES_PORT = '54332'
+        POSTGRES_USER = 'app'
+        POSTGRES_PASSWORD = 'secret'
+        POSTGRES_DATABASE = 'app'
+        APP_ENV = 'prod'
+        APP_DEBUG = '0'
     }
     stages {
         stage('Init') {
@@ -96,12 +103,16 @@ pipeline {
                 withCredentials([
                     string(credentialsId: 'PRODUCTION_API_HOST', variable: 'HOST'),
                     string(credentialsId: 'PRODUCTION_API_PORT', variable: 'PORT'),
-                    file(credentialsId: 'POSTGRES_PASSWORD', variable: 'POSTGRES_PASSWORD'),
+                    string(credentialsId: 'POSTGRES_PASSWORD', variable: 'POSTGRES_PASSWORD'),
                     string(credentialsId: 'MAILER_HOST', variable: 'MAILER_HOST'),
                     string(credentialsId: 'MAILER_PORT', variable: 'MAILER_PORT'),
                     string(credentialsId: 'MAILER_USERNAME', variable: 'MAILER_USERNAME'),
-                    file(credentialsId: 'MAILER_PASSWORD', variable: 'MAILER_PASSWORD'),
-                    string(credentialsId: 'MAILER_FROM_EMAIL', variable: 'MAILER_FROM_EMAIL')
+                    string(credentialsId: 'MAILER_PASSWORD', variable: 'MAILER_PASSWORD'),
+                    string(credentialsId: 'MAILER_FROM_EMAIL', variable: 'MAILER_FROM_EMAIL'),
+                    string(credentialsId: 'REDIS_HOST', variable: 'REDIS_HOST'),
+                    string(credentialsId: 'FRONTEND_URL', variable: 'FRONTEND_URL'),
+                    string(credentialsId: 'APP_AUTH_SECRET_KEY', variable: 'APP_AUTH_SECRET_KEY'),
+                    string(credentialsId: 'SENTRY_DSN', variable: 'SENTRY_DSN')
                 ]) {
                     sshagent (credentials: ['PRODUCTION_AUTH']) {
                         sh 'make deploy'

@@ -22,6 +22,7 @@ services:
           POSTGRES_DATABASE: ${POSTGRES_DATABASE}
           POSTGRES_USER: ${POSTGRES_USER}
           POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+          SENTRY_DSN: ${SENTRY_DSN}
           PHP_IDE_CONFIG: serverName=localhost
         networks:
           docker_default:
@@ -39,6 +40,7 @@ services:
           POSTGRES_DATABASE: ${POSTGRES_DATABASE}
           POSTGRES_USER: ${POSTGRES_USER}
           POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+          SENTRY_DSN: ${SENTRY_DSN}
         networks:
           docker_default:
         volumes:
